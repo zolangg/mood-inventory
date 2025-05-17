@@ -288,7 +288,6 @@ bdi_sum = sum(bdi_values)
 st.subheader("Auswertung")
 
 def interpret_asrm14(core, total, psychosis_scores):
-    # Schwellen nach deinem Dokument
     kerntext = ""
     gesamttext = ""
     if core < 6:
@@ -327,34 +326,38 @@ st.write(f"**Gesamt-ASRM (1-14) Punktzahl:** {asrm_total} von 56")
 st.markdown(f"- **ASRM-Interpretation:**\n{asrm14_text}")
 st.write(f"**BDI-II Gesamtpunktzahl:** {bdi_sum}")
 st.markdown(f"- **BDI-II-Interpretation:** {bdi_text}")
+# === Neue Mood Matrix: Range auf x-Achse, BDI auf y ===
+st.subheader("Mischzustandsmatrix (ASRM vs. BDI)")
 
-# === Neue Balken/Range-Grafik ===
-st.subheader("Kern- und Gesamt-ASRM: Bereichsanzeige")
-
-fig, ax = plt.subplots(figsize=(8, 1.5))
-
-# Nur der Range-Balken zwischen Kern und Gesamt
-ax.barh(0, asrm_total - asrm_core, left=asrm_core, height=0.36, color="#90caf9", edgecolor="black", linewidth=1.5)
-
-# Linker Punkt (Kern)
-ax.plot(asrm_core, 0, "o", color="#1976d2", markersize=14, label="Kern-ASRM (1–5)")
-ax.text(asrm_core, 0.25, f"Kern: {asrm_core}", ha="center", va="bottom", color="#1976d2", fontsize=10, fontweight="bold")
-
-# Rechter Punkt (Gesamt)
-ax.plot(asrm_total, 0, "o", color="#b71c1c", markersize=14, label="Gesamt-ASRM (1–14)")
-ax.text(asrm_total, 0.25, f"Gesamt: {asrm_total}", ha="center", va="bottom", color="#b71c1c", fontsize=10, fontweight="bold")
-
-# Schwellenwerte
-ax.axvline(6, color="grey", linestyle="--", label="Cutoff Kern: 6")
-ax.axvline(12, color="grey", linestyle="--", label="Schwere Manie Kern: 12")
-ax.axvline(17, color="orange", linestyle="--", label="Cutoff Gesamt: 17")
-ax.axvline(35, color="red", linestyle="--", label="Schwere Manie Gesamt: 35")
+fig, ax = plt.subplots(figsize=(8, 6))
 
 ax.set_xlim(0, 56)
-ax.set_yticks([])
-ax.set_xlabel("ASRM Punkte (max. 56)")
-ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
-ax.set_frame_on(False)
+ax.set_ylim(0, 63)
+ax.set_xlabel("14-Item ASRM (Manie/Mischzustand)")
+ax.set_ylabel("BDI-II (Depression)")
+
+# Vertikale Schwellenlinien
+ax.axvline(6, color="grey", linestyle="--", label="Cutoff Kern: 6")
+ax.axvline(17, color="orange", linestyle="--", label="Cutoff Gesamt: 17")
+ax.axvline(35, color="red", linestyle="--", label="Schwere Manie: 35")
+ax.axhline(19, color="grey", linestyle="--")
+
+# Quadranten-Labels
+ax.text(5, 60, "Depressiv", fontsize=10)
+ax.text(35, 5, "Manisch", fontsize=10)
+ax.text(35, 55, "Mischzustand", fontsize=10)
+ax.text(5, 5, "Unauffaellig", fontsize=10)
+
+# Die Range auf y = aktuellem BDI-Score
+ax.plot([asrm_core, asrm_total], [bdi_sum, bdi_sum], color="#1976d2", linewidth=5, alpha=0.8)
+
+# Linker Marker: Kern-ASRM
+ax.plot(asrm_core, bdi_sum, "o", color="#1976d2", markersize=12, label="Kern-ASRM (1–5)")
+ax.text(asrm_core, bdi_sum + 1.5, f"{asrm_core}", ha="center", color="#1976d2", fontsize=10, fontweight="bold
+        ax.plot(asrm_total, bdi_sum, "o", color="#b71c1c", markersize=12, label="Gesamt-ASRM (1–14)")
+ax.text(asrm_total, bdi_sum + 1.5, f"{asrm_total}", ha="center", color="#b71c1c", fontsize=10, fontweight="bold")
+
+ax.legend(loc="upper left", bbox_to_anchor=(1,1))
 st.pyplot(fig)
 
 # === PDF-Export ===
@@ -391,7 +394,7 @@ if st.button("PDF erstellen und herunterladen"):
     pdf.multi_cell(0, 10, make_ascii(f"BDI-II-Interpretation: {bdi_text}"))
     pdf.ln(5)
     pdf.set_font("Arial", style="B", size=12)
-    pdf.cell(0, 10, make_ascii("Kern- und Gesamt-ASRM Bereichsgrafik:"), ln=True)
+    pdf.cell(0, 10, make_ascii("Mood-Matrix:"), ln=True)
     y_now = pdf.get_y()
     pdf.image(grafik_path, x=10, y=y_now, w=pdf.w-20)
     os.remove(grafik_path)
