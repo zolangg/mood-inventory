@@ -330,16 +330,12 @@ ax.set_xlabel("Manie/Psychose Score (Selbstbeurteilungsbogen)")
 ax.set_ylabel("Depression Score (Selbstbeurteilungsbogen)")
 
 # Schwellenlinien ASRM
-ax.axvline(8, color="grey", linestyle="--", label="Normbereich ASRM: 8")
-ax.axvline(17, color="orange", linestyle="--", label="leichte Hypomanie: 17")
 ax.axvline(24, color="green", linestyle="--", label="Hypomanie: 24")
 ax.axvline(35, color="red", linestyle="--", label="Manie: 35")
 
 # Schwellenlinien BDI
-ax.axhline(13, color="#1976d2", linestyle=":", label="min. Depression: 13")
-ax.axhline(23, color="#ffa726", linestyle=":", label="leicht: 23")
-ax.axhline(34, color="#388e3c", linestyle=":", label="moderat: 34")
-ax.axhline(47, color="#d32f2f", linestyle=":", label="schwer: 47")
+ax.axhline(34, color="#388e3c", linestyle=":", label="Moderate Depression: 34")
+ax.axhline(47, color="#d32f2f", linestyle=":", label="Schwere Depression: 47")
 
 # Bereichsbeschriftungen
 ax.text(5, 85, "Depressiv", fontsize=11, color="#1976d2")
