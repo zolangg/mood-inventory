@@ -343,14 +343,14 @@ ax.axvline(35, color="red", linestyle="--", label="Schwere Manie: 35")
 ax.axhline(14, color="#1976d2", linestyle=":", label="BDI: leicht (14)")
 ax.axhline(20, color="#ffa726", linestyle=":", label="BDI: mäßig (20)")
 ax.axhline(29, color="#d32f2f", linestyle=":", label="BDI: schwer (29)")
-ax.text(57, 14, "leicht", va="center", color="#1976d2", fontsize=10)
-ax.text(57, 20, "mäßig", va="center", color="#ffa726", fontsize=10)
-ax.text(57, 29, "schwer", va="center", color="#d32f2f", fontsize=10)
+ax.text(57, 14, va="center", color="#1976d2", fontsize=10)
+ax.text(57, 20, va="center", color="#ffa726", fontsize=10)
+ax.text(57, 29, va="center", color="#d32f2f", fontsize=10)
 
 # Quadranten-Labels
 ax.text(5, 60, "Depressiv", fontsize=10)
 ax.text(35, 5, "Manisch", fontsize=10)
-ax.text(35, 55, "Mischzustand", fontsize=10)
+ax.text(35, 60, "Mischzustand", fontsize=10)
 ax.text(5, 5, "Unauffaellig", fontsize=10)
 
 # Schwarzer Range-Strich zwischen beiden Punkten auf dem BDI-Wert
@@ -358,7 +358,7 @@ ax.plot([asrm_core, asrm_total], [bdi_sum, bdi_sum], color="black", linewidth=4,
 
 # Linker Marker: Kern-ASRM
 ax.plot(asrm_core, bdi_sum, "o", color="#1976d2", markersize=13, label="Kern-ASRM (1–5)", zorder=3)
-ax.text(asrm_core, bdi_sum + 2.1, f"{asrm_core}", ha="center", color="#1976d2", fontsize=12, fontweight="bold", zorder=4)
+ax.text(asrm_core, bdi_sum + 2.1, f"ASRM: {asrm_core}", ha="center", color="#1976d2", fontsize=12, fontweight="bold", zorder=4)
 # Depressionsscore links neben dem Punkt
 ax.text(asrm_core - 2, bdi_sum, f"BDI: {bdi_sum}", ha="right", va="center", color="#333", fontsize=11, fontweight="bold", zorder=5)
 
