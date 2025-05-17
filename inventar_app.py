@@ -1,4 +1,4 @@
-import streamlit as st
+üimport streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 from fpdf import FPDF
@@ -11,7 +11,6 @@ def make_ascii(text):
                 .replace("“", '"').replace("”", '"').replace("„", '"')
                 .replace("’", "'").replace("‘", "'").replace("–", "-").replace("—", "-")
                 .replace("…", "...").replace("°", " Grad "))
-
 st.set_page_config(page_title="Mehrmals taegliches Selbstbeurteilungs-Inventar", layout="centered")
 st.title("Mehrmals taegliches Selbstbeurteilungs-Inventar")
 
@@ -135,7 +134,6 @@ psychosis_scores = asrm14_values[11:14]
 
 asrm_core = sum(asrm14_values[:5])
 asrm_total = asrm14_sum
-
 # === BDI-II (ASCII-kompatibel, Kurzfassung) ===
 
 st.header("Depressive Symptome (BDI-II, mehrmals taeglich)")
@@ -326,7 +324,7 @@ st.write(f"**Gesamt-ASRM (1-14) Punktzahl:** {asrm_total} von 56")
 st.markdown(f"- **ASRM-Interpretation:**\n{asrm14_text}")
 st.write(f"**BDI-II Gesamtpunktzahl:** {bdi_sum}")
 st.markdown(f"- **BDI-II-Interpretation:** {bdi_text}")
-# === Neue Mood Matrix: Range auf x-Achse, BDI auf y ===
+# === Mood-Matrix (Range, zwei Punkte, schwarzer Strich, BDI-Schwellenwerte, Score-Labels) ===
 st.subheader("Mischzustandsmatrix (ASRM vs. BDI)")
 
 fig, ax = plt.subplots(figsize=(8, 6))
@@ -336,11 +334,18 @@ ax.set_ylim(0, 63)
 ax.set_xlabel("14-Item ASRM (Manie/Mischzustand)")
 ax.set_ylabel("BDI-II (Depression)")
 
-# Vertikale Schwellenlinien
+# ASRM Schwellen
 ax.axvline(6, color="grey", linestyle="--", label="Cutoff Kern: 6")
 ax.axvline(17, color="orange", linestyle="--", label="Cutoff Gesamt: 17")
 ax.axvline(35, color="red", linestyle="--", label="Schwere Manie: 35")
-ax.axhline(19, color="grey", linestyle="--")
+
+# BDI-II Schwellenlinien und Labels
+ax.axhline(14, color="#1976d2", linestyle=":", label="BDI: leicht (14)")
+ax.axhline(20, color="#ffa726", linestyle=":", label="BDI: mäßig (20)")
+ax.axhline(29, color="#d32f2f", linestyle=":", label="BDI: schwer (29)")
+ax.text(57, 14, "leicht", va="center", color="#1976d2", fontsize=10)
+ax.text(57, 20, "mäßig", va="center", color="#ffa726", fontsize=10)
+ax.text(57, 29, "schwer", va="center", color="#d32f2f", fontsize=10)
 
 # Quadranten-Labels
 ax.text(5, 60, "Depressiv", fontsize=10)
@@ -348,14 +353,18 @@ ax.text(35, 5, "Manisch", fontsize=10)
 ax.text(35, 55, "Mischzustand", fontsize=10)
 ax.text(5, 5, "Unauffaellig", fontsize=10)
 
-# Die Range auf y = aktuellem BDI-Score
-ax.plot([asrm_core, asrm_total], [bdi_sum, bdi_sum], color="#1976d2", linewidth=5, alpha=0.8)
+# Schwarzer Range-Strich zwischen beiden Punkten auf dem BDI-Wert
+ax.plot([asrm_core, asrm_total], [bdi_sum, bdi_sum], color="black", linewidth=4, zorder=2)
 
 # Linker Marker: Kern-ASRM
-ax.plot(asrm_core, bdi_sum, "o", color="#1976d2", markersize=12, label="Kern-ASRM (1–5)")
-ax.text(asrm_core, bdi_sum + 1.5, f"{asrm_core}", ha="center", color="#1976d2", fontsize=10, fontweight="bold")
-ax.plot(asrm_total, bdi_sum, "o", color="#b71c1c", markersize=12, label="Gesamt-ASRM (1–14)")
-ax.text(asrm_total, bdi_sum + 1.5, f"{asrm_total}", ha="center", color="#b71c1c", fontsize=10, fontweight="bold")
+ax.plot(asrm_core, bdi_sum, "o", color="#1976d2", markersize=13, label="Kern-ASRM (1–5)", zorder=3)
+ax.text(asrm_core, bdi_sum + 2.1, f"{asrm_core}", ha="center", color="#1976d2", fontsize=12, fontweight="bold", zorder=4)
+# Depressionsscore links neben dem Punkt
+ax.text(asrm_core - 2, bdi_sum, f"BDI: {bdi_sum}", ha="right", va="center", color="#333", fontsize=11, fontweight="bold", zorder=5)
+
+# Rechter Marker: Gesamt-ASRM
+ax.plot(asrm_total, bdi_sum, "o", color="#b71c1c", markersize=13, label="Gesamt-ASRM (1–14)", zorder=3)
+ax.text(asrm_total, bdi_sum + 2.1, f"{asrm_total}", ha="center", color="#b71c1c", fontsize=12, fontweight="bold", zorder=4)
 
 ax.legend(loc="upper left", bbox_to_anchor=(1,1))
 st.pyplot(fig)
@@ -363,7 +372,6 @@ st.pyplot(fig)
 # === PDF-Export ===
 st.subheader("PDF Export")
 if st.button("PDF erstellen und herunterladen"):
-    # Grafik speichern
     with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
         fig.savefig(tmpfile.name, bbox_inches='tight')
         grafik_path = tmpfile.name
