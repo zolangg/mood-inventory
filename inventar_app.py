@@ -342,21 +342,16 @@ ax.axhline(34, color="#388e3c", linestyle=":", label="moderat: 34")
 ax.axhline(47, color="#d32f2f", linestyle=":", label="schwer: 47")
 
 # Bereichsbeschriftungen
-ax.text(70, 87, "Sehr schwere Depression", fontsize=9, color="#d32f2f")
-ax.text(70, 36, "Schwere Depression", fontsize=9, color="#388e3c")
-ax.text(70, 25, "Moderate Depression", fontsize=9, color="#ffa726")
-ax.text(70, 7, "Minimale Depression", fontsize=9, color="#1976d2")
-
 ax.text(5, 85, "Depressiv", fontsize=11, color="#1976d2")
 ax.text(45, 5, "Manisch/Psychotisch", fontsize=11, color="red")
-ax.text(45, 75, "Mischzustand", fontsize=11, color="purple")
+ax.text(45, 85, "Mischzustand", fontsize=11, color="purple")
 ax.text(5, 5, "Unauffaellig", fontsize=10)
 
 # Optional: Du kannst zwei "Teilscores" oder andere Aspekte visualisieren.
 # Hier als Beispiel: Ein Punkt auf den Gesamtscores
 ax.plot(asrm_sum, bdi_sum, "o", color="#1976d2", markersize=14)
 ax.text(asrm_sum, bdi_sum + 2.1, f"{asrm_sum}", ha="center", color="#1976d2", fontsize=12, fontweight="bold")
-ax.text(asrm_sum - 2, bdi_sum, f"BDI: {bdi_sum}", ha="right", va="center", color="#333", fontsize=11, fontweight="bold")
+ax.text(asrm_sum - 2, bdi_sum, f"{bdi_sum}", ha="right", va="center", color="#1976d2", fontsize=12, fontweight="bold")
 
 ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
 st.pyplot(fig)
