@@ -133,6 +133,9 @@ for i, (question, options) in enumerate(asrm14_items):
 asrm14_sum = sum(asrm14_values)
 psychosis_scores = asrm14_values[11:14]
 
+asrm_core = sum(asrm14_values[:5])
+asrm_total = asrm14_sum
+
 # === BDI-II (ASCII-kompatibel, Kurzfassung) ===
 
 st.header("Depressive Symptome (BDI-II, mehrmals taeglich)")
@@ -284,19 +287,27 @@ bdi_sum = sum(bdi_values)
 
 st.subheader("Auswertung")
 
-def interpret_asrm14(score, psychosis_scores):
-    message = ""
-    if score < 15:
-        message += "Keine oder nur minimale manische Symptome."
-    elif score < 18:
-        message += "Milde manische Symptome."
-    elif score < 25:
-        message += "Hypomanische Tendenz (Fruehwarnzeichen)."
+def interpret_asrm14(core, total, psychosis_scores):
+    # Schwellen nach deinem Dokument
+    kerntext = ""
+    gesamttext = ""
+    if core < 6:
+        kerntext = "Kern-ASRM: Unauffaellig (0-5)"
+    elif core <= 12:
+        kerntext = "Kern-ASRM: Auffaellig (6-12, Hypomanie/Manie)"
     else:
-        message += "Klinisch relevante Manie! Dringende Ruecksprache empfohlen."
+        kerntext = "Kern-ASRM: Schwere Manie (>12)"
+
+    if total < 17:
+        gesamttext = "Gesamt-ASRM: Unauffaellig (<17)"
+    elif total <= 35:
+        gesamttext = "Gesamt-ASRM: Auffaellig (17-35, Hypomanie/Manie)"
+    else:
+        gesamttext = "Gesamt-ASRM: Schwere Manie (>35)"
+    warntext = ""
     if any([x >= 1 for x in psychosis_scores]):
-        message += " \n**Achtung:** Psychotische Symptome vorhanden! Bitte umgehend aerztliche Abklaerung erwaegen."
-    return message
+        warntext = "\n**Achtung:** Psychotische Symptome vorhanden! Bitte aerztliche Abklaerung!"
+    return f"{kerntext}\n{gesamttext}{warntext}"
 
 def interpret_bdi(score):
     if score <= 13:
@@ -308,29 +319,42 @@ def interpret_bdi(score):
     else:
         return "Schwere Symptome"
 
-asrm14_text = interpret_asrm14(asrm14_sum, psychosis_scores)
+asrm14_text = interpret_asrm14(asrm_core, asrm_total, psychosis_scores)
 bdi_text = interpret_bdi(bdi_sum)
 
-st.write(f"**14-Item ASRM Gesamtpunktzahl:** {asrm14_sum} von 56")
-st.markdown(f"- **ASRM-Interpretation:** {asrm14_text}")
+st.write(f"**Kern-ASRM (1-5) Punktzahl:** {asrm_core} von 20")
+st.write(f"**Gesamt-ASRM (1-14) Punktzahl:** {asrm_total} von 56")
+st.markdown(f"- **ASRM-Interpretation:**\n{asrm14_text}")
 st.write(f"**BDI-II Gesamtpunktzahl:** {bdi_sum}")
 st.markdown(f"- **BDI-II-Interpretation:** {bdi_text}")
 
-# === Quadrantengrafik ===
-st.subheader("Mischzustandsmatrix (ASRM vs. BDI)")
-fig, ax = plt.subplots(figsize=(6, 4))
+# === Neue Balken/Range-Grafik ===
+st.subheader("Kern- und Gesamt-ASRM: Bereichsanzeige")
+
+fig, ax = plt.subplots(figsize=(8, 1.5))
+
+# Nur der Range-Balken zwischen Kern und Gesamt
+ax.barh(0, asrm_total - asrm_core, left=asrm_core, height=0.36, color="#90caf9", edgecolor="black", linewidth=1.5)
+
+# Linker Punkt (Kern)
+ax.plot(asrm_core, 0, "o", color="#1976d2", markersize=14, label="Kern-ASRM (1–5)")
+ax.text(asrm_core, 0.25, f"Kern: {asrm_core}", ha="center", va="bottom", color="#1976d2", fontsize=10, fontweight="bold")
+
+# Rechter Punkt (Gesamt)
+ax.plot(asrm_total, 0, "o", color="#b71c1c", markersize=14, label="Gesamt-ASRM (1–14)")
+ax.text(asrm_total, 0.25, f"Gesamt: {asrm_total}", ha="center", va="bottom", color="#b71c1c", fontsize=10, fontweight="bold")
+
+# Schwellenwerte
+ax.axvline(6, color="grey", linestyle="--", label="Cutoff Kern: 6")
+ax.axvline(12, color="grey", linestyle="--", label="Schwere Manie Kern: 12")
+ax.axvline(17, color="orange", linestyle="--", label="Cutoff Gesamt: 17")
+ax.axvline(35, color="red", linestyle="--", label="Schwere Manie Gesamt: 35")
+
 ax.set_xlim(0, 56)
-ax.set_ylim(0, 63)
-ax.set_xlabel("14-Item ASRM (Manie/Mischzustand)")
-ax.set_ylabel("BDI-II (Depression)")
-ax.axvline(18, color="grey", linestyle="--", alpha=0.7, label="Cutoff Hypomanie")
-ax.axvline(25, color="red", linestyle="--", alpha=0.5, label="Cutoff Manie")
-ax.axhline(19, color="grey", linestyle="--", alpha=0.7)
-ax.scatter(asrm14_sum, bdi_sum, s=150, color="red")
-ax.text(5, 60, "Depressiv", fontsize=10)
-ax.text(35, 5, "Manisch", fontsize=10)
-ax.text(35, 55, "Mischzustand", fontsize=10)
-ax.text(5, 5, "Unauffaellig", fontsize=10)
+ax.set_yticks([])
+ax.set_xlabel("ASRM Punkte (max. 56)")
+ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
+ax.set_frame_on(False)
 st.pyplot(fig)
 
 # === PDF-Export ===
@@ -354,21 +378,22 @@ if st.button("PDF erstellen und herunterladen"):
     pdf.set_font("Arial", size=10)
     for i, (q, _) in enumerate(asrm14_items):
         pdf.multi_cell(0, 8, make_ascii(f"{i+1}. {q}: {asrm14_answers[i]}"))
-    pdf.cell(0, 10, make_ascii(f"Gesamtpunktzahl ASRM: {asrm14_sum}"), ln=True)
-    pdf.multi_cell(0, 10, make_ascii(f"ASRM-Interpretation: {asrm14_text}"))
+    pdf.cell(0, 10, make_ascii(f"Kern-ASRM (1-5): {asrm_core}"), ln=True)
+    pdf.cell(0, 10, make_ascii(f"Gesamt-ASRM (1-14): {asrm_total}"), ln=True)
+    pdf.multi_cell(0, 10, make_ascii(f"ASRM-Interpretation:\n{asrm14_text}"))
     pdf.ln(5)
     pdf.set_font("Arial", style="B", size=12)
     pdf.cell(0, 10, make_ascii("BDI-II:"), ln=True)
     pdf.set_font("Arial", size=10)
     for i, (q, _) in enumerate(bdi_questions):
-        pdf.multi_cell(0, 8, make_ascii(f"{i + 1}. {q}: {bdi_answers[i]}"))
+        pdf.multi_cell(0, 8, make_ascii(f"{i+1}. {q}: {bdi_answers[i]}"))
     pdf.cell(0, 10, make_ascii(f"Gesamtpunktzahl BDI-II: {bdi_sum}"), ln=True)
     pdf.multi_cell(0, 10, make_ascii(f"BDI-II-Interpretation: {bdi_text}"))
     pdf.ln(5)
     pdf.set_font("Arial", style="B", size=12)
-    pdf.cell(0, 10, make_ascii("Mischzustandsmatrix:"), ln=True)
+    pdf.cell(0, 10, make_ascii("Kern- und Gesamt-ASRM Bereichsgrafik:"), ln=True)
     y_now = pdf.get_y()
-    pdf.image(grafik_path, x=10, y=y_now, w=pdf.w - 20)
+    pdf.image(grafik_path, x=10, y=y_now, w=pdf.w-20)
     os.remove(grafik_path)
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmpfile:
         pdf.output(tmpfile.name)
