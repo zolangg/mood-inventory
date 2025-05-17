@@ -343,9 +343,9 @@ ax.axvline(35, color="red", linestyle="--", label="Schwere Manie: 35")
 ax.axhline(14, color="#1976d2", linestyle=":", label="BDI: leicht (14)")
 ax.axhline(20, color="#ffa726", linestyle=":", label="BDI: mäßig (20)")
 ax.axhline(29, color="#d32f2f", linestyle=":", label="BDI: schwer (29)")
-ax.text(57, 14, va="center", color="#1976d2", fontsize=10)
-ax.text(57, 20, va="center", color="#ffa726", fontsize=10)
-ax.text(57, 29, va="center", color="#d32f2f", fontsize=10)
+ax.text(57, 14, "", va="center", color="#1976d2", fontsize=10)
+ax.text(57, 20, "", va="center", color="#ffa726", fontsize=10)
+ax.text(57, 29, "", va="center", color="#d32f2f", fontsize=10)
 
 # Quadranten-Labels
 ax.text(5, 60, "Depressiv", fontsize=10)
