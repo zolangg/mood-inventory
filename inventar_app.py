@@ -354,7 +354,7 @@ ax.plot([asrm_core, asrm_total], [bdi_sum, bdi_sum], color="#1976d2", linewidth=
 # Linker Marker: Kern-ASRM
 ax.plot(asrm_core, bdi_sum, "o", color="#1976d2", markersize=12, label="Kern-ASRM (1–5)")
 ax.text(asrm_core, bdi_sum + 1.5, f"{asrm_core}", ha="center", color="#1976d2", fontsize=10, fontweight="bold
-        ax.plot(asrm_total, bdi_sum, "o", color="#b71c1c", markersize=12, label="Gesamt-ASRM (1–14)")
+ax.plot(asrm_total, bdi_sum, "o", color="#b71c1c", markersize=12, label="Gesamt-ASRM (1–14)")
 ax.text(asrm_total, bdi_sum + 1.5, f"{asrm_total}", ha="center", color="#b71c1c", fontsize=10, fontweight="bold")
 
 ax.legend(loc="upper left", bbox_to_anchor=(1,1))
