@@ -11,362 +11,354 @@ def make_ascii(text):
                 .replace("“", '"').replace("”", '"').replace("„", '"')
                 .replace("’", "'").replace("‘", "'").replace("–", "-").replace("—", "-")
                 .replace("…", "...").replace("°", " Grad "))
-st.set_page_config(page_title="Mehrmals taegliches Selbstbeurteilungs-Inventar", layout="centered")
-st.title("Mehrmals taegliches Selbstbeurteilungs-Inventar")
 
+st.set_page_config(page_title="Selbstbeurteilungsbogen", layout="centered")
+st.title("Selbstbeurteilungsbogen – Tagesmonitoring")
 name = st.text_input("Name")
 datum = st.date_input("Datum")
 
-# === 14-Item ASRM (Manie/Mischzustand) ===
+# === Selbstbeurteilungsbogen für manische und psychotische Symptome ===
+st.header("Selbstbeurteilungsbogen für manische und psychotische Symptome")
 
-st.header("Manische und psychotische Symptome (14-Item ASRM, mehrmals taeglich)")
-
-asrm14_items = [
-    ("Reizbarkeit", [
-        "Ich war nicht gereizt.",
-        "Ich war gelegentlich gereizt.",
-        "Ich war haeufiger gereizt, konnte es aber gut kontrollieren.",
-        "Ich war die meiste Zeit gereizt und hatte Muehe, es zu kontrollieren.",
-        "Ich war durchgehend extrem gereizt."
+asrm_items = [
+    ("Stimmung", [
+        "Ich fuehle mich nicht anders als sonst.",
+        "Ich bin gelegentlich besser gelaunt oder gereizter als sonst.",
+        "Ich bin haeufig deutlich besser gelaunt oder gereizt, kann es aber kontrollieren.",
+        "Ich bin die meiste Zeit ungewoehnlich gehoben/gereizt, kann es kaum kontrollieren.",
+        "Ich bin fast staendig euphorisch oder stark gereizt."
     ]),
-    ("Gluecksgefuehl / gehobene Stimmung", [
-        "Ich war nicht froehlicher oder besser gelaunt als sonst.",
-        "Ich war gelegentlich froehlicher oder besser gelaunt als sonst.",
-        "Ich war haeufiger froehlicher oder besser gelaunt als sonst.",
-        "Ich war die meiste Zeit froehlicher oder besser gelaunt als sonst.",
-        "Ich war die ganze Zeit ueber aussergewoehnlich froehlich oder besser gelaunt."
-    ]),
-    ("Stimmungswechsel", [
-        "Meine Stimmung war stabil.",
-        "Meine Stimmung hat sich gelegentlich von froehlich zu traurig oder gereizt veraendert.",
-        "Meine Stimmung hat sich haeufiger von froehlich zu traurig oder gereizt veraendert.",
-        "Meine Stimmung hat sich die meiste Zeit rasch veraendert.",
-        "Meine Stimmung hat sich staendig und abrupt veraendert."
-    ]),
-    ("Selbstvertrauen", [
-        "Mein Selbstvertrauen war wie ueblich.",
-        "Ich war gelegentlich selbstsicherer als sonst.",
-        "Ich war haeufiger deutlich selbstsicherer als sonst.",
-        "Ich war die meiste Zeit sehr selbstsicher.",
-        "Ich war durchgehend extrem selbstsicher."
-    ]),
-    ("Gefuehl besonderer Faehigkeiten", [
-        "Ich hatte nicht das Gefuehl, besondere Faehigkeiten oder Kenntnisse zu haben.",
-        "Ich hatte gelegentlich das Gefuehl, besondere Faehigkeiten oder Kenntnisse zu haben, die andere nicht haben.",
-        "Ich hatte haeufiger das Gefuehl, besondere Faehigkeiten oder Kenntnisse zu haben, die andere nicht haben.",
-        "Ich hatte die meiste Zeit das Gefuehl, besondere Faehigkeiten oder Kenntnisse zu haben.",
-        "Ich war ueberzeugt, aussergewoehnliche Faehigkeiten oder Kenntnisse zu haben, die anderen fehlen."
+    ("Hyperfokus/Spezialinteresse", [
+        "Mein Interesse an meinen Themen ist wie ueblich.",
+        "Ich beschaeftige mich gelegentlich intensiver mit einem Thema als sonst.",
+        "Ich fokussiere haeufig sehr stark auf ein Thema, verliere dabei aber nicht die Kontrolle.",
+        "Ich bin die meiste Zeit so auf ein Thema fokussiert, dass anderes vernachlaessigt wird.",
+        "Ich bin fast ununterbrochen extrem fixiert und kann kaum abschalten."
     ]),
     ("Schlafbeduerfnis", [
-        "Mein Schlafbeduerfnis war wie sonst.",
-        "Ich brauchte gelegentlich weniger Schlaf als sonst.",
-        "Ich brauchte haeufiger weniger Schlaf als sonst.",
-        "Ich brauchte die meiste Zeit weniger Schlaf als sonst.",
-        "Ich war durchgehend ohne Schlaf oder brauchte keinen Schlaf und fuehlte mich trotzdem nicht muede."
+        "Mein Schlafbeduerfnis ist wie sonst.",
+        "Ich brauche gelegentlich weniger Schlaf als sonst.",
+        "Ich brauche haeufig weniger Schlaf, fuehle mich aber nicht muede.",
+        "Ich schlafe kaum und bin trotzdem leistungsfaehig.",
+        "Ich brauche kaum oder gar keinen Schlaf."
     ]),
-    ("Rededrang", [
-        "Ich habe nicht mehr als sonst geredet.",
-        "Ich habe gelegentlich mehr als sonst geredet.",
-        "Ich habe haeufiger mehr als sonst geredet.",
-        "Ich habe die meiste Zeit mehr als sonst geredet.",
-        "Ich habe staendig und ohne Unterbrechung geredet."
+    ("Gedankenfluss", [
+        "Meine Gedanken sind ruhig wie ueblich.",
+        "Gelegentlich habe ich mehr Ideen oder Gedanken als sonst.",
+        "Ich habe haeufig viele Gedanken auf einmal, kann sie aber ordnen.",
+        "Ich habe die meiste Zeit viele rasende Gedanken, die mich antreiben.",
+        "Meine Gedanken rasen pausenlos, ich kann sie kaum steuern."
     ]),
-    ("Gedankenrasen", [
-        "Meine Gedanken waren ruhig und geordnet.",
-        "Meine Gedanken waren gelegentlich schneller oder sprunghafter als sonst.",
-        "Meine Gedanken waren haeufiger schnell oder sprunghaft, aber ich konnte sie kontrollieren.",
-        "Meine Gedanken waren die meiste Zeit rasend und schwer zu kontrollieren.",
-        "Meine Gedanken waren staendig rasend und kaum zu kontrollieren."
+    ("Kommunikation", [
+        "Ich spreche wie ueblich.",
+        "Ich spreche gelegentlich mehr oder intensiver als sonst, meist ueber Spezialthemen.",
+        "Ich spreche haeufig viel oder ausufernd ueber meine Themen.",
+        "Ich rede die meiste Zeit sehr viel, vor allem monothematisch.",
+        "Ich rede fast ununterbrochen, kann kaum gestoppt werden."
     ]),
-    ("Ablenkbarkeit", [
-        "Ich war nicht abgelenkt durch meine Umgebung.",
-        "Ich war gelegentlich abgelenkt durch Ereignisse oder Dinge um mich herum.",
-        "Ich war haeufiger abgelenkt durch Ereignisse oder Dinge um mich herum.",
-        "Ich war die meiste Zeit abgelenkt durch Ereignisse oder Dinge um mich herum.",
-        "Ich war staendig abgelenkt und konnte mich auf nichts konzentrieren."
+    ("Ordnungs-/Strukturdrang", [
+        "Mein Beduerfnis nach Ordnung und Struktur ist wie ueblich.",
+        "Ich habe gelegentlich das Gefuehl, mehr Kontrolle oder Ordnung zu brauchen.",
+        "Ich richte haeufig Listen, Plaene, Rituale ein, um mich zu beruhigen.",
+        "Ich muss die meiste Zeit alles strukturieren, fuehle mich sonst unruhig.",
+        "Mein Ordnungsdrang bestimmt fast durchgehend mein Verhalten."
     ]),
-    ("Aktivitaetsniveau", [
-        "Ich war nicht aktiver als sonst.",
-        "Ich war gelegentlich aktiver als sonst.",
-        "Ich war haeufiger aktiver als sonst.",
-        "Ich war die meiste Zeit aktiver als sonst.",
-        "Ich war nahezu pausenlos in Bewegung oder sehr aktiv."
+    ("Risikoreiches Verhalten", [
+        "Kein risikoreiches Verhalten.",
+        "Gelegentlich risikoreicher als sonst, ohne grosse Folgen.",
+        "Haeufig risikoreiche Entscheidungen, kann sie meist noch kontrollieren.",
+        "Die meiste Zeit handle ich impulsiv/riskant, trotz moeglicher negativer Folgen.",
+        "Fast staendig impulsive, riskante Handlungen ohne Ruecksicht auf Konsequenzen."
     ]),
-    ("Risikoverhalten / unueberlegte Handlungen", [
-        "Ich habe keine Aktivitaeten ausgeuebt, die fuer mich oder andere negative Folgen hatten.",
-        "Ich habe gelegentlich Dinge getan, die zu negativen Folgen gefuehrt haben (z.B. impulsive Einkaeufe, riskantes Verhalten).",
-        "Ich habe haeufiger solche Dinge getan.",
-        "Ich habe die meiste Zeit solche Aktivitaeten ausgeuebt.",
-        "Ich habe wiederholt Dinge getan, die zu gravierenden Problemen gefuehrt haben und das Gefuehl gehabt, die Kontrolle zu verlieren."
+    ("Gefuehl besonderer Faehigkeiten/Bedeutung", [
+        "Kein besonderes Gefuehl.",
+        "Gelegentlich fuehle ich mich besonders talentiert/bedeutend.",
+        "Haeufig habe ich das Gefuehl, besonders viel zu koennen.",
+        "Die meiste Zeit bin ich ueberzeugt, aussergewoehnlich begabt zu sein.",
+        "Ich bin fast staendig voellig sicher, besondere Faehigkeiten oder eine besondere Mission zu haben."
     ]),
-    ("Stimmenhoeren", [
-        "Ich habe keine Stimmen oder Geraeusche gehoert, die andere nicht gehoert haben.",
-        "Ich habe gelegentlich Stimmen oder Geraeusche gehoert, die andere nicht gehoert haben.",
-        "Ich habe haeufiger Stimmen oder Geraeusche gehoert, die andere nicht gehoert haben.",
-        "Ich habe die meiste Zeit solche Stimmen oder Geraeusche gehoert.",
-        "Ich habe fast staendig Stimmen oder Geraeusche gehoert, die andere nicht hoeren konnten."
+    ("Selbstvertrauen/Selbstueberschaetzung", [
+        "Mein Selbstvertrauen ist wie sonst.",
+        "Gelegentlich mehr Selbstvertrauen als ueblich.",
+        "Haeufig sehr selbstsicher, traue mir viel zu.",
+        "Die meiste Zeit ueberschaetze ich meine Faehigkeiten deutlich.",
+        "Ich fuehle mich fast immer absolut sicher, alles zu koennen - keine Zweifel, kein Zoegern."
     ]),
-    ("Halluzinationen (z.B. Visionen, Dinge sehen)", [
-        "Ich habe keine Dinge gesehen, die andere nicht sehen konnten.",
-        "Ich habe gelegentlich Dinge gesehen, die andere nicht sehen konnten.",
-        "Ich habe haeufiger Dinge gesehen, die andere nicht sehen konnten.",
-        "Ich habe die meiste Zeit Dinge gesehen, die anderen verborgen waren.",
-        "Ich habe fast staendig Dinge gesehen, die andere nicht sehen konnten."
+    ("Misstrauen/Paranoide Gedanken", [
+        "Ich habe kein Misstrauen, fuehle mich nicht bedroht.",
+        "Gelegentlich denke ich, dass andere ueber mich reden oder mich beobachten.",
+        "Haeufig bin ich misstrauisch, glaube, dass man mir schaden will.",
+        "Die meiste Zeit bin ich ueberzeugt, dass ich ueberwacht/verfolgt werde.",
+        "Ich bin voellig sicher, dass ich verfolgt, bedroht oder kontrolliert werde."
     ]),
-    ("Ungewoehnliche / paranoide Gedanken", [
-        "Ich hatte keine ungewoehnlichen oder belastenden Gedanken (wie: verfolgt zu werden, beeinflusst zu werden, oder dass andere ueber mich reden).",
-        "Ich hatte gelegentlich solche Gedanken.",
-        "Ich hatte haeufiger solche Gedanken.",
-        "Ich hatte die meiste Zeit belastende und stoerende Gedanken.",
-        "Ich wurde die ganze Zeit von solchen Gedanken gequaelt, die meinen Alltag beeintraechtigt haben."
-    ])
+    ("Wahnideen", [
+        "Meine Gedanken sind realistisch und nachvollziehbar.",
+        "Gelegentlich glaube ich an Dinge, die anderen seltsam erscheinen koennten.",
+        "Haeufig habe ich feste Ueberzeugungen, die anderen merkwuerdig vorkommen.",
+        "Die meiste Zeit glaube ich an Dinge, die andere nicht nachvollziehen koennen.",
+        "Ich bin voellig ueberzeugt von sonderbaren oder 'unwirklichen' Ueberzeugungen."
+    ]),
+    ("Stimmenhoeren/Halluzinationen", [
+        "Ich hoere keine Stimmen oder Geraeusche, die nicht da sind.",
+        "Gelegentlich habe ich das Gefuehl, meinen Namen zu hoeren oder dass jemand spricht, obwohl niemand da ist.",
+        "Haeufig hoere ich Stimmen/Geraeusche, bin mir aber unsicher, ob sie real sind.",
+        "Die meiste Zeit hoere ich Stimmen/Geraeusche, die andere nicht wahrnehmen.",
+        "Ich hoere fast staendig Stimmen oder Geraeusche, die mir etwas sagen, befehlen oder mich kommentieren."
+    ]),
+    ("Veraenderte Wahrnehmung", [
+        "Meine Wahrnehmung ist wie ueblich.",
+        "Gelegentlich erscheinen mir Geraeusche, Farben oder Licht anders als sonst.",
+        "Haeufig wirken meine Umgebung oder mein Koerper veraendert oder fremd.",
+        "Die meiste Zeit fuehle ich mich 'unwirklich' oder nehme Dinge ganz anders wahr als sonst.",
+        "Meine Wahrnehmung ist durchgehend voellig veraendert (alles wirkt fremd, bedrohlich oder verzerrt)."
+    ]),
+    ("Beeinflussungs- oder Kontrollgefuehle", [
+        "Ich habe die volle Kontrolle ueber meine Gedanken und Handlungen.",
+        "Gelegentlich habe ich das Gefuehl, dass meine Gedanken von aussen beeinflusst werden.",
+        "Haeufig denke ich, dass meine Gedanken oder Handlungen von anderen gesteuert werden.",
+        "Die meiste Zeit bin ich ueberzeugt, dass andere meine Gedanken lesen oder kontrollieren koennen.",
+        "Ich habe staendig das Gefuehl, komplett fremdgesteuert zu sein."
+    ]),
+    ("Selbstverletzendes Verhalten", [
+        "Ich habe keinerlei Impuls, mich selbst zu schlagen, zu stossen oder anders zu verletzen.",
+        "Gelegentlich habe ich das Beduerfnis, mich selbst zu verletzen, kann es aber kontrollieren.",
+        "Haeufig kommt der Impuls, mich zu verletzen - ich widerstehe manchmal, manchmal nicht.",
+        "Die meiste Zeit kann ich den Drang, mich zu verletzen, kaum kontrollieren, und es kommt regelmaessig zu solchen Handlungen.",
+        "Ich verletze mich fast staendig durch Schlagen, Stossen, Beissen, Kratzen oder aehnliche Impulse, ohne Kontrolle darueber."
+    ]),
 ]
 
-asrm14_values = []
-asrm14_answers = []
-for i, (question, options) in enumerate(asrm14_items):
-    answer = st.radio(f"{i+1}. {question}", options, key=f"asrm14_{i}")
-    asrm14_answers.append(answer)
-    asrm14_values.append(options.index(answer))
+asrm_answers = []
+asrm_values = []
+for i, (question, options) in enumerate(asrm_items):
+    answer = st.radio(f"{i+1}. {question}", options, key=f"asrm_{i}")
+    asrm_answers.append(answer)
+    asrm_values.append(options.index(answer))
+asrm_sum = sum(asrm_values)
 
-asrm14_sum = sum(asrm14_values)
-psychosis_scores = asrm14_values[11:14]
+# === Selbstbeurteilungsbogen für depressive Symptome ===
+st.header("Selbstbeurteilungsbogen für depressive Symptome")
 
-asrm_core = sum(asrm14_values[:5])
-asrm_total = asrm14_sum
-# === BDI-II (ASCII-kompatibel, Kurzfassung) ===
-
-st.header("Depressive Symptome (BDI-II, mehrmals taeglich)")
-
-bdi_questions = [
-    ("Traurigkeit", [
-        "Ich war nicht traurig.",
-        "Ich war zeitweise traurig.",
-        "Ich war fast die ganze Zeit traurig.",
-        "Ich war so traurig, dass ich es kaum ertragen konnte."
-    ]),
-    ("Pessimismus", [
-        "Ich hatte Hoffnung fuer die naehere Zukunft.",
-        "Ich war zwischenzeitlich entmutigt.",
-        "Ich hatte wenig Hoffnung, dass sich etwas verbessert.",
-        "Ich hatte keine Hoffnung fuer die naehere Zukunft."
-    ]),
-    ("Gefuehl des Versagens", [
-        "Ich hatte kein Gefuehl des Versagens.",
-        "Ich habe mich gelegentlich als gescheitert gefuehlt.",
-        "Ich habe mehrere Misserfolge wahrgenommen.",
-        "Ich habe mich durchgehend als Versager gefuehlt."
+bdi_items = [
+    ("Traurigkeit/Leere", [
+        "Ich fuehle mich nicht traurig oder leer.",
+        "Ich bin gelegentlich traurig oder leer.",
+        "Ich bin haeufig traurig oder leer.",
+        "Ich bin die meiste Zeit traurig oder leer.",
+        "Ich bin fast durchgehend traurig oder voellig leer."
     ]),
     ("Verlust von Freude", [
-        "Ich konnte mich an Dingen erfreuen.",
-        "Meine Freude war zwischendurch vermindert.",
-        "Ich konnte mich kaum noch freuen.",
-        "Ich konnte mich an nichts erfreuen."
+        "Ich habe an allem Freude wie sonst.",
+        "Ich habe gelegentlich weniger Freude als sonst.",
+        "Ich empfinde haeufig weniger Freude, auch an Lieblingsaktivitaeten.",
+        "Ich kann die meiste Zeit keine Freude mehr empfinden.",
+        "Ich kann ueberhaupt keine Freude mehr empfinden."
     ]),
-    ("Schuldgefuehle", [
-        "Ich hatte keine Schuldgefuehle.",
-        "Ich fuehlte mich wegen mancher Dinge schuldig.",
-        "Ich hatte stark ausgepraegte Schuldgefuehle.",
-        "Ich fuehlte mich durchgehend schuldig."
+    ("Verlust Hyperfokus/Spezialinteresse", [
+        "Mein Interesse an meinen Themen ist wie ueblich.",
+        "Ich habe gelegentlich weniger Lust, mich damit zu beschaeftigen.",
+        "Ich habe haeufig wenig Lust, kann mich nur schwer motivieren.",
+        "Ich kann mich die meiste Zeit nicht mehr dafuer begeistern.",
+        "Ich kann mich ueberhaupt nicht mehr fuer meine Interessen motivieren."
     ]),
-    ("Gefuehl bestraft zu werden", [
-        "Ich hatte nicht das Gefuehl, bestraft zu werden.",
-        "Ich hatte zeitweise das Gefuehl, ich koennte bestraft werden.",
-        "Ich erwartete, bestraft zu werden.",
-        "Ich war ueberzeugt, bestraft zu werden."
+    ("Selbstwertgefuehl", [
+        "Ich habe ein normales Selbstwertgefuehl.",
+        "Gelegentlich habe ich Selbstzweifel.",
+        "Haeufig fuehle ich mich unsicher oder minderwertig.",
+        "Ich habe die meiste Zeit ein geringes Selbstwertgefuehl.",
+        "Ich fuehle mich fast durchgehend wertlos und ungenuegend."
     ]),
-    ("Selbstabwertung", [
-        "Mein Selbstwertgefuehl war wie gewohnt.",
-        "Ich hatte gelegentlich weniger Selbstvertrauen.",
-        "Ich war mit mir selbst unzufrieden.",
-        "Ich mochte mich gar nicht."
-    ]),
-    ("Selbstkritik", [
-        "Ich habe mich nicht besonders selbstkritisch gesehen.",
-        "Ich war zeitweise kritischer mit mir als sonst.",
-        "Ich machte mir viele Vorwuerfe.",
-        "Ich gab mir fuer alles die Schuld."
-    ]),
-    ("Suizidgedanken", [
-        "Ich hatte keine Gedanken an Selbsttoetung.",
-        "Ich hatte gelegentlich Gedanken daran, aber keine Absicht.",
-        "Ich haette manchmal nicht mehr leben wollen.",
-        "Ich haette mich umgebracht, wenn ich gekonnt haette."
-    ]),
-    ("Weinen", [
-        "Ich habe nicht geweint.",
-        "Ich war zeitweise den Traenen nahe.",
-        "Ich habe viel geweint.",
-        "Ich wollte weinen, konnte aber nicht."
-    ]),
-    ("Unruhe/Agitiertheit", [
-        "Ich war nicht unruhiger als sonst.",
-        "Ich war manchmal unruhiger als sonst.",
-        "Ich konnte kaum stillsitzen.",
-        "Ich musste die meiste Zeit in Bewegung sein."
-    ]),
-    ("Interessenverlust", [
-        "Ich hatte Interesse an Aktivitaeten.",
-        "Mein Interesse war zwischenzeitlich reduziert.",
-        "Ich hatte kaum Interesse an irgendetwas.",
-        "Ich konnte mich fuer nichts interessieren."
-    ]),
-    ("Entscheidungsschwierigkeiten", [
-        "Ich konnte Entscheidungen wie gewohnt treffen.",
-        "Entscheidungen fielen mir zeitweise schwerer.",
-        "Es fiel mir deutlich schwerer, mich zu entscheiden.",
-        "Ich konnte keine Entscheidungen treffen."
+    ("Schuld-/Versagensgefuehle", [
+        "Ich mache mir keine besonderen Vorwuerfe.",
+        "Gelegentlich mache ich mir mehr Gedanken ueber Fehler.",
+        "Haeufig fuehle ich mich schuldig oder als Versager.",
+        "Die meiste Zeit habe ich starke Schuld- oder Versagensgefuehle.",
+        "Ich fuehle mich staendig vollkommen schuldig/als Versager."
     ]),
     ("Wertlosigkeitsgefuehl", [
-        "Mein Selbstwertgefuehl war normal.",
-        "Ich fuehlte mich manchmal weniger wertvoll.",
-        "Ich fuehlte mich anderen unterlegen.",
-        "Ich fuehlte mich voellig wertlos."
+        "Ich empfinde mich als wertvoll wie sonst.",
+        "Gelegentlich habe ich Gedanken, wertlos zu sein.",
+        "Haeufig habe ich das Gefuehl, anderen nichts wert zu sein.",
+        "Die meiste Zeit fuehle ich mich wertlos.",
+        "Ich fuehle mich staendig voellig wertlos."
     ]),
-    ("Energieverlust", [
-        "Ich hatte normale Energie.",
-        "Ich fuehlte mich zwischendurch etwas erschoepft.",
-        "Ich konnte wenig machen.",
-        "Ich war zu erschoepft, um etwas zu tun."
+    ("Selbstkritik", [
+        "Ich bin nicht selbstkritischer als sonst.",
+        "Ich kritisiere mich gelegentlich mehr als sonst.",
+        "Haeufig mache ich mir starke Vorwuerfe oder kritisiere mich.",
+        "Die meiste Zeit bewerte ich mich sehr negativ.",
+        "Ich mache mich staendig selbst fertig."
     ]),
-    ("Schlafveraenderung", [
-        "Mein Schlaf war wie gewoehnlich.",
-        "Ich habe etwas mehr geschlafen als sonst.",
-        "Ich habe etwas weniger geschlafen als sonst.",
-        "Ich habe deutlich mehr geschlafen als sonst.",
-        "Ich habe deutlich weniger geschlafen als sonst.",
-        "Ich habe fast durchgehend geschlafen.",
-        "Ich bin ein bis zwei Stunden zu frueh aufgewacht."
+    ("Suizidgedanken", [
+        "Ich habe keine Gedanken daran, mir das Leben zu nehmen.",
+        "Gelegentlich kommen solche Gedanken auf, verschwinden aber schnell.",
+        "Haeufig denke ich daran, aber ohne konkrete Absicht.",
+        "Ich habe die meiste Zeit Gedanken an Suizid und gelegentlich Plaene.",
+        "Ich habe starke Suizidgedanken und/oder Plaene."
     ]),
-    ("Reizbarkeit", [
-        "Ich war nicht reizbarer als sonst.",
-        "Ich war zeitweise leicht reizbar.",
-        "Ich war oft sehr gereizt.",
-        "Ich war die meiste Zeit durchgehend gereizt."
+    ("Selbstverletzendes Verhalten", [
+        "Ich habe keinerlei Impuls, mich selbst zu schlagen, zu stossen oder anders zu verletzen.",
+        "Gelegentlich habe ich das Beduerfnis, mich selbst zu verletzen, kann es aber kontrollieren.",
+        "Haeufig kommt der Impuls, mich zu verletzen - ich widerstehe manchmal, manchmal nicht.",
+        "Die meiste Zeit kann ich den Drang, mich zu verletzen, kaum kontrollieren, und es kommt regelmaessig zu solchen Handlungen.",
+        "Ich verletze mich fast staendig durch Schlagen, Stossen, Beissen, Kratzen oder aehnliche Impulse, ohne Kontrolle darueber."
     ]),
-    ("Appetitveraenderung", [
-        "Mein Appetit war wie gewohnt.",
-        "Ich hatte zwischendurch weniger Appetit.",
-        "Ich hatte zwischendurch mehr Appetit.",
-        "Ich hatte deutlich weniger Appetit.",
-        "Ich hatte deutlich mehr Appetit.",
-        "Ich hatte gar keinen Appetit.",
-        "Ich hatte staendig Heisshunger."
+    ("Weinen", [
+        "Ich weine nicht mehr als sonst.",
+        "Ich weine gelegentlich mehr.",
+        "Ich muss haeufiger und leichter weinen.",
+        "Ich weine die meiste Zeit oder kann das Weinen nicht kontrollieren.",
+        "Ich habe den ganzen Tag ueber das Beduerfnis zu weinen."
     ]),
-    ("Konzentrationsprobleme", [
-        "Meine Konzentration war wie gewohnt.",
-        "Ich konnte mich zeitweise schlechter konzentrieren.",
-        "Ich konnte mich kaum noch laenger konzentrieren.",
-        "Ich konnte mich gar nicht konzentrieren."
+    ("Unruhe/Agitiertheit", [
+        "Ich bin so ruhig wie sonst.",
+        "Gelegentlich bin ich innerlich unruhig.",
+        "Haeufig bin ich angespannt oder kann nicht stillsitzen.",
+        "Ich bin die meiste Zeit sehr unruhig oder 'aufgedreht'.",
+        "Ich bin fast staendig getrieben, kann kaum zur Ruhe kommen."
+    ]),
+    ("Entscheidungsschwierigkeiten", [
+        "Ich kann Entscheidungen treffen wie immer.",
+        "Gelegentlich faellt es mir schwerer als sonst.",
+        "Haeufig brauche ich laenger, bin unsicher.",
+        "Ich kann die meiste Zeit kaum Entscheidungen treffen.",
+        "Ich kann mich fast nie entscheiden, selbst bei Kleinigkeiten."
+    ]),
+    ("Antrieb/Energieverlust", [
+        "Ich habe normale Energie.",
+        "Ich fuehle mich gelegentlich weniger energiegeladen.",
+        "Haeufig bin ich muede/erschoepft.",
+        "Die meiste Zeit bin ich sehr antriebslos.",
+        "Ich habe praktisch keine Energie mehr."
+    ]),
+    ("Schlaf", [
+        "Ich schlafe wie gewohnt.",
+        "Gelegentlich schlafe ich schlechter oder mehr als sonst.",
+        "Haeufig habe ich Ein- oder Durchschlafprobleme/Schlafe zu viel.",
+        "Die meiste Zeit kann ich kaum schlafen oder nur mit Muehe.",
+        "Ich schlafe fast gar nicht mehr oder nur extrem viel."
+    ]),
+    ("Appetitveraenderungen", [
+        "Mein Appetit ist wie ueblich.",
+        "Gelegentlich esse ich weniger oder mehr als sonst.",
+        "Haeufig habe ich wenig/zu viel Appetit.",
+        "Die meiste Zeit habe ich kaum/uebermaessigen Appetit.",
+        "Ich esse fast nichts/fast staendig, ohne Hunger/Saettigungsgefuehl."
+    ]),
+    ("Konzentration", [
+        "Ich kann mich wie gewohnt konzentrieren.",
+        "Gelegentlich bin ich unkonzentriert.",
+        "Haeufig habe ich Schwierigkeiten, bei der Sache zu bleiben.",
+        "Die meiste Zeit kann ich mich kaum konzentrieren.",
+        "Ich kann mich praktisch gar nicht mehr konzentrieren."
     ]),
     ("Muedigkeit/Erschoepfung", [
-        "Ich war nicht mueder als sonst.",
-        "Ich wurde schneller muede.",
-        "Ich konnte vieles nicht tun.",
-        "Ich war fuer fast alles zu muede."
+        "Ich bin wie gewohnt wach/fit.",
+        "Ich bin gelegentlich mueder als sonst.",
+        "Haeufig bin ich sehr muede/erschoepft.",
+        "Die meiste Zeit fuehle ich mich erschoepft und schlapp.",
+        "Ich bin praktisch immer voellig erschoepft."
     ]),
     ("Libidoverlust", [
-        "Mein sexuelles Interesse war wie gewoehnlich.",
-        "Ich hatte zwischendurch weniger Interesse.",
-        "Ich hatte deutlich weniger Interesse.",
-        "Ich hatte kein sexuelles Interesse mehr."
-    ])
+        "Mein sexuelles Interesse ist wie immer.",
+        "Gelegentlich habe ich weniger Interesse.",
+        "Haeufig ist mein sexuelles Interesse stark vermindert.",
+        "Die meiste Zeit habe ich gar kein sexuelles Interesse.",
+        "Ich habe keinerlei sexuelles Interesse mehr."
+    ]),
 ]
 
-bdi_values = []
 bdi_answers = []
-for i, (question, options) in enumerate(bdi_questions):
+bdi_values = []
+for i, (question, options) in enumerate(bdi_items):
     answer = st.radio(f"{i+1}. {question}", options, key=f"bdi_{i}")
     bdi_answers.append(answer)
     bdi_values.append(options.index(answer))
 bdi_sum = sum(bdi_values)
 
-# === Auswertung & Anzeige ===
+# Psychotische Items markieren (wie gehabt)
+psychotic_asrm_indices = list(range(9, 15))  # 10-15 (0-basiert)
+psychotic_bdi_indices = [7, 8]               # Suizidgedanken, Selbstverletzung
 
-st.subheader("Auswertung")
+psychotic_flag = any(asrm_values[i] >= 2 for i in psychotic_asrm_indices) or any(bdi_values[i] >= 2 for i in psychotic_bdi_indices)
 
-def interpret_asrm14(core, total, psychosis_scores):
-    kerntext = ""
-    gesamttext = ""
-    if core < 6:
-        kerntext = "Kern-ASRM: Unauffaellig (0-5)"
-    elif core <= 12:
-        kerntext = "Kern-ASRM: Auffaellig (6-12, Hypomanie/Manie)"
+# === Schwellenwerte-Auswertung ===
+def interpret_asrm(score):
+    if score <= 8:
+        return "Normbereich (0–8)"
+    elif score <= 17:
+        return "Subklinisch/leichte Hypomanie (9–17)"
+    elif score <= 24:
+        return "Hypomanie (18–24)"
+    elif score <= 35:
+        return "Manie (25–35)"
     else:
-        kerntext = "Kern-ASRM: Schwere Manie (>12)"
-
-    if total < 17:
-        gesamttext = "Gesamt-ASRM: Unauffaellig (<17)"
-    elif total <= 35:
-        gesamttext = "Gesamt-ASRM: Auffaellig (17-35, Hypomanie/Manie)"
-    else:
-        gesamttext = "Gesamt-ASRM: Schwere Manie (>35)"
-    warntext = ""
-    if any([x >= 1 for x in psychosis_scores]):
-        warntext = "\n**Achtung:** Psychotische Symptome vorhanden! Bitte aerztliche Abklaerung!"
-    return f"{kerntext}\n{gesamttext}{warntext}"
+        return "Schwere Manie/Psychose (>35)"
 
 def interpret_bdi(score):
     if score <= 13:
-        return "Minimale depressive Symptome"
-    elif score <= 19:
-        return "Leichte Symptome"
-    elif score <= 28:
-        return "Maessige Symptome"
+        return "Keine/minimale Depression (0–13)"
+    elif score <= 23:
+        return "Leichte Depression (14–23)"
+    elif score <= 34:
+        return "Moderate Depression (24–34)"
+    elif score <= 47:
+        return "Schwere Depression (35–47)"
     else:
-        return "Schwere Symptome"
+        return "Sehr schwere Depression (>47)"
 
-asrm14_text = interpret_asrm14(asrm_core, asrm_total, psychosis_scores)
+asrm_text = interpret_asrm(asrm_sum)
 bdi_text = interpret_bdi(bdi_sum)
 
-st.write(f"**Kern-ASRM (1-5) Punktzahl:** {asrm_core} von 20")
-st.write(f"**Gesamt-ASRM (1-14) Punktzahl:** {asrm_total} von 56")
-st.markdown(f"- **ASRM-Interpretation:**\n{asrm14_text}")
-st.write(f"**BDI-II Gesamtpunktzahl:** {bdi_sum}")
-st.markdown(f"- **BDI-II-Interpretation:** {bdi_text}")
-# === Mood-Matrix (Range, zwei Punkte, schwarzer Strich, BDI-Schwellenwerte, Score-Labels) ===
-st.subheader("Mischzustandsmatrix (ASRM vs. BDI)")
+st.subheader("Auswertung")
+st.write(f"**Manie/Psychose Gesamtpunktzahl:** {asrm_sum} von 75")
+st.write(f"**Depression Gesamtpunktzahl:** {bdi_sum} von 90")
+st.markdown(f"- **Interpretation Manie/Psychose:**\n{asrm_text}")
+st.markdown(f"- **Interpretation Depression:**\n{bdi_text}")
+if psychotic_flag:
+    st.error("Achtung: Es liegen auffällige psychotische oder suizidale Symptome vor! Bitte aerztlich abklaeren.")
+
+# === Mood-Matrix (mit Range, Schwellenwerten, Score-Labels) ===
+st.subheader("Stimmungs-Matrix (Manie/Psychose vs. Depression)")
 
 fig, ax = plt.subplots(figsize=(8, 6))
 
-ax.set_xlim(0, 56)
-ax.set_ylim(0, 63)
-ax.set_xlabel("14-Item ASRM (Manie/Mischzustand)")
-ax.set_ylabel("BDI-II (Depression)")
+# Achsenlimits je nach Maximalpunkten deiner Inventare (hier 75 für ASRM, 90 für BDI)
+ax.set_xlim(0, 75)
+ax.set_ylim(0, 90)
+ax.set_xlabel("Manie/Psychose Score (Selbstbeurteilungsbogen)")
+ax.set_ylabel("Depression Score (Selbstbeurteilungsbogen)")
 
-# ASRM Schwellen
-ax.axvline(6, color="grey", linestyle="--", label="Cutoff Kern: 6")
-ax.axvline(17, color="orange", linestyle="--", label="Cutoff Gesamt: 17")
-ax.axvline(35, color="red", linestyle="--", label="Schwere Manie: 35")
+# Schwellenlinien ASRM
+ax.axvline(8, color="grey", linestyle="--", label="Normbereich ASRM: 8")
+ax.axvline(17, color="orange", linestyle="--", label="leichte Hypomanie: 17")
+ax.axvline(24, color="green", linestyle="--", label="Hypomanie: 24")
+ax.axvline(35, color="red", linestyle="--", label="Manie: 35")
 
-# BDI-II Schwellenlinien und Labels
-ax.axhline(14, color="#1976d2", linestyle=":", label="BDI: leicht (14)")
-ax.axhline(20, color="#ffa726", linestyle=":", label="BDI: mäßig (20)")
-ax.axhline(29, color="#d32f2f", linestyle=":", label="BDI: schwer (29)")
-ax.text(57, 14, "", va="center", color="#1976d2", fontsize=10)
-ax.text(57, 20, "", va="center", color="#ffa726", fontsize=10)
-ax.text(57, 29, "", va="center", color="#d32f2f", fontsize=10)
+# Schwellenlinien BDI
+ax.axhline(13, color="#1976d2", linestyle=":", label="min. Depression: 13")
+ax.axhline(23, color="#ffa726", linestyle=":", label="leicht: 23")
+ax.axhline(34, color="#388e3c", linestyle=":", label="moderat: 34")
+ax.axhline(47, color="#d32f2f", linestyle=":", label="schwer: 47")
 
-# Quadranten-Labels
-ax.text(5, 60, "Depressiv", fontsize=10)
-ax.text(35, 5, "Manisch", fontsize=10)
-ax.text(35, 60, "Mischzustand", fontsize=10)
+# Bereichsbeschriftungen
+ax.text(70, 87, "Sehr schwere Depression", fontsize=9, color="#d32f2f")
+ax.text(70, 36, "Schwere Depression", fontsize=9, color="#388e3c")
+ax.text(70, 25, "Moderate Depression", fontsize=9, color="#ffa726")
+ax.text(70, 7, "Minimale Depression", fontsize=9, color="#1976d2")
+
+ax.text(5, 85, "Depressiv", fontsize=11, color="#1976d2")
+ax.text(45, 5, "Manisch/Psychotisch", fontsize=11, color="red")
+ax.text(45, 75, "Mischzustand", fontsize=11, color="purple")
 ax.text(5, 5, "Unauffaellig", fontsize=10)
 
-# Schwarzer Range-Strich zwischen beiden Punkten auf dem BDI-Wert
-ax.plot([asrm_core, asrm_total], [bdi_sum, bdi_sum], color="black", linewidth=4, zorder=2)
+# Optional: Du kannst zwei "Teilscores" oder andere Aspekte visualisieren.
+# Hier als Beispiel: Ein Punkt auf den Gesamtscores
+ax.plot(asrm_sum, bdi_sum, "o", color="#1976d2", markersize=14)
+ax.text(asrm_sum, bdi_sum + 2.1, f"{asrm_sum}", ha="center", color="#1976d2", fontsize=12, fontweight="bold")
+ax.text(asrm_sum - 2, bdi_sum, f"BDI: {bdi_sum}", ha="right", va="center", color="#333", fontsize=11, fontweight="bold")
 
-# Linker Marker: Kern-ASRM
-ax.plot(asrm_core, bdi_sum, "o", color="#1976d2", markersize=13, label="Kern-ASRM (1–5)", zorder=3)
-ax.text(asrm_core, bdi_sum + 2.1, f"ASRM: {asrm_core}", ha="center", color="#1976d2", fontsize=12, fontweight="bold", zorder=4)
-# Depressionsscore links neben dem Punkt
-ax.text(asrm_core - 2, bdi_sum, f"BDI: {bdi_sum}", ha="right", va="center", color="#333", fontsize=11, fontweight="bold", zorder=5)
-
-# Rechter Marker: Gesamt-ASRM
-ax.plot(asrm_total, bdi_sum, "o", color="#b71c1c", markersize=13, label="Gesamt-ASRM (1–14)", zorder=3)
-ax.text(asrm_total, bdi_sum + 2.1, f"{asrm_total}", ha="center", color="#b71c1c", fontsize=12, fontweight="bold", zorder=4)
-
-ax.legend(loc="upper left", bbox_to_anchor=(1,1))
+ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
 st.pyplot(fig)
 
 # === PDF-Export ===
@@ -379,30 +371,29 @@ if st.button("PDF erstellen und herunterladen"):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=14)
-    pdf.cell(0, 10, make_ascii("Mehrmals taegliches Selbstbeurteilungs-Inventar (14-Item ASRM & BDI-II)"), ln=True, align="C")
+    pdf.cell(0, 10, make_ascii("Selbstbeurteilungsbogen Tagesmonitoring"), ln=True, align="C")
     pdf.set_font("Arial", size=10)
     pdf.cell(0, 10, make_ascii(f"Name: {name}"), ln=True)
     pdf.cell(0, 10, make_ascii(f"Datum: {datum}"), ln=True)
     pdf.ln(5)
     pdf.set_font("Arial", style="B", size=12)
-    pdf.cell(0, 10, make_ascii("14-Item ASRM:"), ln=True)
+    pdf.cell(0, 10, make_ascii("Manie/Psychose-Inventar:"), ln=True)
     pdf.set_font("Arial", size=10)
-    for i, (q, _) in enumerate(asrm14_items):
-        pdf.multi_cell(0, 8, make_ascii(f"{i+1}. {q}: {asrm14_answers[i]}"))
-    pdf.cell(0, 10, make_ascii(f"Kern-ASRM (1-5): {asrm_core}"), ln=True)
-    pdf.cell(0, 10, make_ascii(f"Gesamt-ASRM (1-14): {asrm_total}"), ln=True)
-    pdf.multi_cell(0, 10, make_ascii(f"ASRM-Interpretation:\n{asrm14_text}"))
+    for i, (q, _) in enumerate(asrm_items):
+        pdf.multi_cell(0, 8, make_ascii(f"{i+1}. {q}: {asrm_answers[i]}"))
+    pdf.cell(0, 10, make_ascii(f"Gesamtpunktzahl: {asrm_sum}"), ln=True)
+    pdf.multi_cell(0, 10, make_ascii(f"Interpretation:\n{asrm_text}"))
     pdf.ln(5)
     pdf.set_font("Arial", style="B", size=12)
-    pdf.cell(0, 10, make_ascii("BDI-II:"), ln=True)
+    pdf.cell(0, 10, make_ascii("Depressions-Inventar:"), ln=True)
     pdf.set_font("Arial", size=10)
-    for i, (q, _) in enumerate(bdi_questions):
+    for i, (q, _) in enumerate(bdi_items):
         pdf.multi_cell(0, 8, make_ascii(f"{i+1}. {q}: {bdi_answers[i]}"))
-    pdf.cell(0, 10, make_ascii(f"Gesamtpunktzahl BDI-II: {bdi_sum}"), ln=True)
-    pdf.multi_cell(0, 10, make_ascii(f"BDI-II-Interpretation: {bdi_text}"))
+    pdf.cell(0, 10, make_ascii(f"Gesamtpunktzahl: {bdi_sum}"), ln=True)
+    pdf.multi_cell(0, 10, make_ascii(f"Interpretation:\n{bdi_text}"))
     pdf.ln(5)
     pdf.set_font("Arial", style="B", size=12)
-    pdf.cell(0, 10, make_ascii("Mood-Matrix:"), ln=True)
+    pdf.cell(0, 10, make_ascii("Stimmungs-Matrix:"), ln=True)
     y_now = pdf.get_y()
     pdf.image(grafik_path, x=10, y=y_now, w=pdf.w-20)
     os.remove(grafik_path)
@@ -412,7 +403,7 @@ if st.button("PDF erstellen und herunterladen"):
             st.download_button(
                 label="PDF herunterladen",
                 data=f.read(),
-                file_name=f"Stimmungsinventar_{datum}.pdf",
+                file_name=f"Selbstbeurteilungsbogen_{datum}.pdf",
                 mime="application/pdf"
             )
         os.remove(tmpfile.name)
