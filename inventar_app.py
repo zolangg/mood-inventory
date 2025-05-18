@@ -329,7 +329,7 @@ ax.set_xlabel("Manie/Psychose Score (Selbstbeurteilungsbogen)")
 ax.set_ylabel("Depression Score (Selbstbeurteilungsbogen)")
 
 # Farbige Schwellenbereiche (vertikal für ASRM)
-ax.axvspan(0, 8, color="#e0f2f1", alpha=0.6, label="ASRM: Normbereich")
+ax.axvspan(0, 8, color="#fffff", alpha=0.0, label="ASRM: Normbereich")
 ax.axvspan(8, 17, color="#fffde7", alpha=0.5, label="ASRM: Leichte Hypomanie")
 ax.axvspan(17, 24, color="#ffe0b2", alpha=0.5, label="ASRM: Hypomanie")
 ax.axvspan(24, 35, color="#ffcdd2", alpha=0.4, label="ASRM: Manie")
