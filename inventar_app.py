@@ -319,14 +319,14 @@ if psychotic_flag:
     st.error("Achtung: Es liegen auffällige psychotische oder suizidale Symptome vor! Bitte aerztlich abklaeren.")
 
 # === Mood-Matrix (mit Range, Schwellenwerten, Score-Labels) ===
-st.subheader("Stimmungs-Matrix (Manie/Psychose vs. Depression)")
+st.subheader("Stimmungs-Matrix (Manie vs. Depression)")
 
 fig, ax = plt.subplots(figsize=(8, 6))
 
 ax.set_xlim(0, 75)
 ax.set_ylim(0, 90)
-ax.set_xlabel("Manie/Psychose Score (Selbstbeurteilungsbogen)")
-ax.set_ylabel("Depression Score (Selbstbeurteilungsbogen)")
+ax.set_xlabel("Manie/Psychose Score")
+ax.set_ylabel("Depression Score")
 
 # Vertikale Schwellenlinien für Manie-Psychose
 ax.axvline(8, color="#FFECB3", lw=1, linestyle="--", label="MPS: Normbereich 0-8")
