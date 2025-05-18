@@ -343,7 +343,7 @@ ax.axhline(34, color="#4FC3F7", lw=1, linestyle="--", label="DS: Schwer Depressi
 # Bereichs-Beschriftungen (Farbe, Position, Größe)
 ax.text(4, 85, "Depressiv", fontsize=11, color="#4FC3F7", weight="bold")
 ax.text(48, 7, "Manisch", fontsize=11, color="#FFCC80", weight="bold")
-ax.text(45, 85, "Mischzustand", fontsize=11, color="#be4d25", weight="bold")
+ax.text(45, 85, "Mischzustand", fontsize=11, color="#be4d25", alpha=0.5, weight="bold")
 
 # Punkt & Score-Label
 ax.plot(asrm_sum, bdi_sum, "o", color="#1976d2", markersize=14)
