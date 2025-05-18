@@ -332,13 +332,13 @@ ax.set_ylabel("Depression Score (Selbstbeurteilungsbogen)")
 ax.axvspan(0, 8, color="#ffffff", alpha=0.0, label="ASRM: Normbereich")
 ax.axvspan(8, 17, color="#fffde7", alpha=0.5, label="ASRM: Leichte Hypomanie")
 ax.axvspan(17, 24, color="#ffe0b2", alpha=0.5, label="ASRM: Hypomanie")
-ax.axvspan(24, 75, color="#ffcdd2", alpha=0.4, label="ASRM: Manie")
+ax.axvspan(24, 75, color="#ffcdd2", alpha=0.5, label="ASRM: Manie")
 
 # Farbige Schwellenbereiche (horizontal für BDI)
 ax.axhspan(0, 13, color="#ffffff", alpha=0.0, label="BDI: Normbereich")
-ax.axhspan(13, 23, color="#fffde7", alpha=0.2, label="BDI: Leicht Depressiv")
-ax.axhspan(23, 34, color="#ffe0b2", alpha=0.2, label="BDI: Moderat Depressiv")
-ax.axhspan(34, 90, color="#ffcdd2", alpha=0.2, label="BDI: Schwer Depressiv")
+ax.axhspan(13, 23, color="#fffde7", alpha=0.5, label="BDI: Leicht Depressiv")
+ax.axhspan(23, 34, color="#ffe0b2", alpha=0.5, label="BDI: Moderat Depressiv")
+ax.axhspan(34, 90, color="#ffcdd2", alpha=0.5, label="BDI: Schwer Depressiv")
 
 # Bereichsbeschriftungen
 ax.text(5, 85, "Depressiv", fontsize=11, color="#1976d2")
