@@ -346,9 +346,9 @@ ax.text(48, 7, "Manisch", fontsize=11, color="#FFCC80", weight="bold")
 ax.text(45, 85, "Mischzustand", fontsize=11, color="#be4d25", alpha=0.6, weight="bold")
 
 # Punkt & Score-Label
-ax.plot(asrm_sum, bdi_sum, "o", color="#1976d2", markersize=14)
-ax.text(asrm_sum, bdi_sum + 2.1, f"{asrm_sum}", ha="center", color="#1976d2", fontsize=12, fontweight="bold")
-ax.text(asrm_sum - 2, bdi_sum, f"BDI: {bdi_sum}", ha="right", va="center", color="#333", fontsize=11, fontweight="bold")
+ax.plot(asrm_sum, bdi_sum, "o", color="#333", markersize=14)
+ax.text(asrm_sum, bdi_sum + 2.1, f"{asrm_sum}", ha="center", color="#333", fontsize=12, fontweight="bold")
+ax.text(asrm_sum - 2, bdi_sum, f"{bdi_sum}", ha="right", va="center", color="#333", fontsize=11, fontweight="bold")
 
 ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
 st.pyplot(fig)
