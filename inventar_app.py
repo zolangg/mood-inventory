@@ -323,19 +323,24 @@ st.subheader("Stimmungs-Matrix (Manie/Psychose vs. Depression)")
 
 fig, ax = plt.subplots(figsize=(8, 6))
 
-# Achsenlimits je nach Maximalpunkten deiner Inventare (hier 75 für ASRM, 90 für BDI)
 ax.set_xlim(0, 75)
 ax.set_ylim(0, 90)
 ax.set_xlabel("Manie/Psychose Score (Selbstbeurteilungsbogen)")
 ax.set_ylabel("Depression Score (Selbstbeurteilungsbogen)")
 
-# Schwellenlinien ASRM
-ax.axvline(24, color="green", linestyle="--", label="Hypomanie: 24")
-ax.axvline(35, color="red", linestyle="--", label="Manie: 35")
+# Farbige Schwellenbereiche (vertikal für ASRM)
+ax.axvspan(0, 8, color="#e0f2f1", alpha=0.6, label="ASRM: Normbereich")
+ax.axvspan(8, 17, color="#fffde7", alpha=0.5, label="ASRM: Leichte Hypomanie")
+ax.axvspan(17, 24, color="#ffe0b2", alpha=0.5, label="ASRM: Hypomanie")
+ax.axvspan(24, 35, color="#ffcdd2", alpha=0.4, label="ASRM: Manie")
+ax.axvspan(35, 75, color="#e1bee7", alpha=0.5, label="ASRM: Schwere Manie/Psychose")
 
-# Schwellenlinien BDI
-ax.axhline(34, color="#388e3c", linestyle=":", label="Moderate Depression: 34")
-ax.axhline(47, color="#d32f2f", linestyle=":", label="Schwere Depression: 47")
+# Farbige Schwellenbereiche (horizontal für BDI)
+ax.axhspan(0, 13, color="#e3f2fd", alpha=0.3, label="BDI: Minimal")
+ax.axhspan(13, 23, color="#fffde7", alpha=0.2, label="BDI: Leicht")
+ax.axhspan(23, 34, color="#ffe0b2", alpha=0.2, label="BDI: Moderat")
+ax.axhspan(34, 47, color="#ffcdd2", alpha=0.2, label="BDI: Schwer")
+ax.axhspan(47, 90, color="#f8bbd0", alpha=0.3, label="BDI: Sehr schwer")
 
 # Bereichsbeschriftungen
 ax.text(5, 85, "Depressiv", fontsize=11, color="#1976d2")
@@ -343,12 +348,13 @@ ax.text(45, 5, "Manisch/Psychotisch", fontsize=11, color="red")
 ax.text(45, 85, "Mischzustand", fontsize=11, color="purple")
 ax.text(5, 5, "Unauffaellig", fontsize=10)
 
-# Optional: Du kannst zwei "Teilscores" oder andere Aspekte visualisieren.
-# Hier als Beispiel: Ein Punkt auf den Gesamtscores
+# Plotpunkt (wie gehabt)
 ax.plot(asrm_sum, bdi_sum, "o", color="#1976d2", markersize=14)
 ax.text(asrm_sum, bdi_sum + 2.1, f"{asrm_sum}", ha="center", color="#1976d2", fontsize=12, fontweight="bold")
-ax.text(asrm_sum - 2, bdi_sum, f"{bdi_sum}", ha="right", va="center", color="#1976d2", fontsize=12, fontweight="bold")
+ax.text(asrm_sum - 2, bdi_sum, f"BDI: {bdi_sum}", ha="right", va="center", color="#333", fontsize=11, fontweight="bold")
 
+ax.set_xlim(0, 75)
+ax.set_ylim(0, 90)
 ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
 st.pyplot(fig)
 
