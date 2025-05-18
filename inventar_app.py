@@ -328,31 +328,29 @@ ax.set_ylim(0, 90)
 ax.set_xlabel("Manie/Psychose Score (Selbstbeurteilungsbogen)")
 ax.set_ylabel("Depression Score (Selbstbeurteilungsbogen)")
 
-# Farbige Schwellenbereiche (vertikal für ASRM)
-ax.axvspan(0, 8, color="#ffffff", alpha=0.0, label="ASRM: Normbereich")
-ax.axvspan(8, 17, color="#fffde7", alpha=0.5, label="ASRM: Leichte Hypomanie")
-ax.axvspan(17, 24, color="#ffe0b2", alpha=0.5, label="ASRM: Hypomanie")
-ax.axvspan(24, 75, color="#ffcdd2", alpha=0.5, label="ASRM: Manie")
+# Vertikale Schwellenlinien für Manie-Psychose
+ax.axvline(8, color="#FFECB3", lw=3, linestyle="--", label="ASRM: Normbereich")
+ax.axvline(17, color="#FFE082", lw=3, linestyle="--", label="ASRM: Leichte Hypomanie")
+ax.axvline(24, color="#FFCC80", lw=3, linestyle="--", label="ASRM: Hypomanie")
+ax.axvline(35, color="#FFAB91", lw=3, linestyle="--", label="ASRM: Manie")
 
-# Farbige Schwellenbereiche (horizontal für BDI)
-ax.axhspan(0, 13, color="#ffffff", alpha=0.0, label="BDI: Normbereich")
-ax.axhspan(13, 23, color="#fffde7", alpha=0.2, label="BDI: Leicht Depressiv")
-ax.axhspan(23, 34, color="#ffe0b2", alpha=0.2, label="BDI: Moderat Depressiv")
-ax.axhspan(34, 90, color="#ffcdd2", alpha=0.2, label="BDI: Schwer Depressiv")
+# Horizontale Schwellenlinien für Depression
+ax.axhline(13, color="#B3E5FC", lw=3, linestyle="--", label="BDI: Normbereich")
+ax.axhline(23, color="#81D4FA", lw=3, linestyle="--", label="BDI: Leicht Depressiv")
+ax.axhline(34, color="#4FC3F7", lw=3, linestyle="--", label="BDI: Moderat Depressiv")
+ax.axhline(47, color="#0288D1", lw=3, linestyle="--", label="BDI: Schwer Depressiv")
 
-# Bereichsbeschriftungen
-ax.text(5, 85, "Depressiv", fontsize=11, color="#1976d2")
-ax.text(45, 5, "Manisch", fontsize=11, color="red")
-ax.text(45, 85, "Mischzustand", fontsize=11, color="purple")
-ax.text(5, 5, "Unauffaellig", fontsize=11)
+# Bereichs-Beschriftungen (Farbe, Position, Größe)
+ax.text(4, 85, "Depressiv", fontsize=13, color="#1976d2", weight="bold")
+ax.text(48, 7, "Manisch", fontsize=13, color="#d32f2f", weight="bold")
+ax.text(45, 75, "Mischzustand", fontsize=13, color="purple", weight="bold")
+ax.text(4, 7, "Unauffaellig", fontsize=11, color="black", weight="bold")
 
-# Plotpunkt (wie gehabt)
+# Punkt & Score-Label
 ax.plot(asrm_sum, bdi_sum, "o", color="#1976d2", markersize=14)
 ax.text(asrm_sum, bdi_sum + 2.1, f"{asrm_sum}", ha="center", color="#1976d2", fontsize=12, fontweight="bold")
 ax.text(asrm_sum - 2, bdi_sum, f"BDI: {bdi_sum}", ha="right", va="center", color="#333", fontsize=11, fontweight="bold")
 
-ax.set_xlim(0, 75)
-ax.set_ylim(0, 90)
 ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
 st.pyplot(fig)
 
