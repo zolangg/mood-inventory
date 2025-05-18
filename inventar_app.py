@@ -344,7 +344,7 @@ ax.axhspan(34, 47, color="#ffcdd2", alpha=0.2, label="BDI: Schwer Depressiv")
 ax.text(5, 85, "Depressiv", fontsize=11, color="#1976d2")
 ax.text(45, 5, "Manisch", fontsize=11, color="red")
 ax.text(45, 85, "Mischzustand", fontsize=11, color="purple")
-ax.text(5, 5, "Unauffaellig", fontsize=10)
+ax.text(5, 5, "Unauffaellig", fontsize=11)
 
 # Plotpunkt (wie gehabt)
 ax.plot(asrm_sum, bdi_sum, "o", color="#1976d2", markersize=14)
