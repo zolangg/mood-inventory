@@ -347,7 +347,7 @@ ax.text(45, 85, "Mischzustand", fontsize=11, color="#be4d25", alpha=0.6, weight=
 
 # Punkt & Score-Label
 ax.plot(asrm_sum, bdi_sum, "o", color="#333", markersize=14)
-ax.text(asrm_sum, bdi_sum + 2.1, f"{asrm_sum}", ha="center", color="#333", fontsize=11, fontweight="bold")
+ax.text(asrm_sum, bdi_sum + 3, f"{asrm_sum}", ha="center", color="#333", fontsize=11, fontweight="bold")
 ax.text(asrm_sum - 2, bdi_sum, f"{bdi_sum}", ha="right", va="center", color="#333", fontsize=11, fontweight="bold")
 
 ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
