@@ -98,27 +98,44 @@ def check_psychotic_flag(asrm_values: List[int], bdi_values: List[int]) -> bool:
 # --- VISUALISIERUNGS- & EXPORTFUNKTIONEN ---
 
 def plot_mood_matrix(asrm_score: int, bdi_score: int) -> plt.Figure:
-    """Erstellt die Stimmungs-Matrix als Matplotlib-Figur."""
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.set_xlim(0, max(60, asrm_score + 5))
-    ax.set_ylim(0, max(72, bdi_score + 5))
+    """Erstellt die Stimmungs-Matrix als Matplotlib-Figur mit farbigen Zonen."""
+    fig, ax = plt.subplots(figsize=(8, 6.5))
+    
+    # Dynamische Achsenlimits, damit der Punkt immer sichtbar ist
+    max_x = max(60, asrm_score + 10)
+    max_y = max(75, bdi_score + 10)
+    ax.set_xlim(-2, max_x)
+    ax.set_ylim(-2, max_y)
+    
     ax.set_xlabel("Manie/Psychose Score")
     ax.set_ylabel("Depression Score")
-    
-    # Zonen definieren für bessere Lesbarkeit
-    ax.fill_between([18, 60], 24, 72, color='#FADBD8', alpha=0.5, label='Mischzustand')
-    ax.fill_between([0, 60], 24, 72, color='#D6EAF8', alpha=0.3, where=[(x<18) for x in np.arange(60)], label='Depressiv')
-    ax.fill_betweenx([0, 72], 18, 60, color='#FEF9E7', alpha=0.5, where=[(y<24) for y in np.arange(72)], label='Manisch')
 
-    # Vertikale Linien (Manie)
-    ax.axvline(18, color="orange", lw=1, linestyle="--")
-    # Horizontale Linien (Depression)
-    ax.axhline(24, color="blue", lw=1, linestyle="--")
-    
-    ax.plot(asrm_score, bdi_score, "o", color="#333", markersize=14, markeredgecolor="white", markeredgewidth=1.5)
+    # Schwellenwerte
+    manic_thresh = 18
+    depressive_thresh = 24
+
+    # Zonen mit ax.fill definieren (x-Koordinaten, y-Koordinaten der Ecken)
+    # Mischzustand (oben rechts)
+    ax.fill([manic_thresh, max_x, max_x, manic_thresh], [depressive_thresh, depressive_thresh, max_y, max_y], 
+            '#FADBD8', alpha=0.6, label='Mischzustand')
+    # Depressiv (oben links)
+    ax.fill([-2, manic_thresh, manic_thresh, -2], [depressive_thresh, depressive_thresh, max_y, max_y], 
+            '#D6EAF8', alpha=0.6, label='Depressiv')
+    # (Hypo)Manisch (unten rechts)
+    ax.fill([manic_thresh, max_x, max_x, manic_thresh], [-2, -2, depressive_thresh, depressive_thresh], 
+            '#FEF9E7', alpha=0.6, label='(Hypo)Manisch')
+    # Euthym (unten links)
+    ax.fill([-2, manic_thresh, manic_thresh, -2], [-2, -2, depressive_thresh, depressive_thresh], 
+            '#E8F8F5', alpha=0.6, label='Euthym/Stabil')
+
+    # Punkt für den aktuellen Score zeichnen
+    ax.plot(asrm_score, bdi_score, "o", color="#e74c3c", markersize=14, markeredgecolor="white", markeredgewidth=2, label="Aktueller Wert")
     ax.text(asrm_score, bdi_score, f"{asrm_score}/{bdi_score}", ha="center", va="center", color="white", fontsize=9, fontweight="bold")
     
-    ax.legend(loc="upper right")
+    ax.legend(loc="upper left")
+    ax.grid(True, linestyle='--', alpha=0.6)
+    plt.tight_layout()
+    
     return fig
 
 def generate_pdf_bytes(name: str, datum, asrm_items, asrm_answers, asrm_sum, asrm_text, bdi_items, bdi_answers, bdi_sum, bdi_text, fig: plt.Figure) -> bytes:
@@ -132,7 +149,6 @@ def generate_pdf_bytes(name: str, datum, asrm_items, asrm_answers, asrm_sum, asr
     pdf.cell(0, 8, make_ascii(f"Datum: {datum}"), ln=True)
     pdf.ln(5)
 
-    # Funktion zum Schreiben eines Fragebogen-Abschnitts
     def write_section(title, items, answers, total_score, interpretation):
         pdf.set_font("Arial", style="B", size=12)
         pdf.cell(0, 10, make_ascii(title), ln=True)
@@ -147,7 +163,6 @@ def generate_pdf_bytes(name: str, datum, asrm_items, asrm_answers, asrm_sum, asr
     write_section("Manie/Psychose-Inventar", asrm_items, asrm_answers, asrm_sum, asrm_text)
     write_section("Depressions-Inventar", bdi_items, bdi_answers, bdi_sum, bdi_text)
 
-    # Grafik einfügen
     with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
         fig.savefig(tmpfile.name, bbox_inches='tight', dpi=150)
         grafik_path = tmpfile.name
@@ -160,7 +175,6 @@ def generate_pdf_bytes(name: str, datum, asrm_items, asrm_answers, asrm_sum, asr
 
     return pdf.output(dest='S').encode('latin-1')
 
-
 # --- STREAMLIT HAUPTANWENDUNG ---
 
 def main():
@@ -168,11 +182,9 @@ def main():
     name = st.text_input("Name", help="Optional, für den PDF-Export.")
     datum = st.date_input("Datum")
 
-    # Fragebögen rendern und Werte sammeln
     asrm_answers, asrm_values, asrm_sum = create_questionnaire_section("Manisch-psychotische Symptome", ASRM_ITEMS, "asrm")
     bdi_answers, bdi_values, bdi_sum = create_questionnaire_section("Depressive Symptome", BDI_ITEMS, "bdi")
 
-    # Auswertung und Interpretation
     asrm_text = interpret_asrm(asrm_sum)
     bdi_text = interpret_bdi(bdi_sum)
     is_psychotic = check_psychotic_flag(asrm_values, bdi_values)
@@ -198,7 +210,7 @@ def main():
         - **Unten rechts (gelb):** (Hypo)manische Symptome dominieren.
         - **Oben links (blau):** Depressive Symptome dominieren.
         - **Oben rechts (rot):** Ein "Mischzustand", bei dem gleichzeitig signifikante manische und depressive Symptome vorliegen.
-        - **Unten links:** Euthymer oder unauffälliger Bereich.
+        - **Unten links (grün):** Euthymer oder unauffälliger Bereich.
         """)
 
     st.subheader("Bericht als PDF exportieren")
