@@ -66,7 +66,6 @@ PSYCHOTIC_BDI_INDICES = [7, 8]
 # --- LOGIK- & BERECHNUNGSFUNKTIONEN ---
 
 def create_questionnaire_section(title: str, items: List[Tuple[str, List[str]]], key_prefix: str) -> Tuple[List[str], List[int], int]:
-    """Erstellt einen Abschnitt mit Radio-Buttons für einen Fragebogen und gibt Antworten und Score zurück."""
     st.header(title)
     answers, values = [], []
     for i, (question, options) in enumerate(items):
@@ -90,7 +89,6 @@ def interpret_bdi(score: int) -> str:
     return "Sehr schwere Depression (>47)"
 
 def check_psychotic_flag(asrm_values: List[int], bdi_values: List[int]) -> bool:
-    """Prüft, ob psychotische oder suizidale Symptome auffällig sind."""
     psychotic_asrm = any(asrm_values[i] >= 2 for i in PSYCHOTIC_ASRM_INDICES)
     psychotic_bdi = any(bdi_values[i] >= 2 for i in PSYCHOTIC_BDI_INDICES)
     return psychotic_asrm or psychotic_bdi
@@ -98,48 +96,66 @@ def check_psychotic_flag(asrm_values: List[int], bdi_values: List[int]) -> bool:
 # --- VISUALISIERUNGS- & EXPORTFUNKTIONEN ---
 
 def plot_mood_matrix(asrm_score: int, bdi_score: int) -> plt.Figure:
-    """Erstellt die Stimmungs-Matrix als Matplotlib-Figur mit farbigen Zonen."""
-    fig, ax = plt.subplots(figsize=(8, 6.5))
-    
-    # Dynamische Achsenlimits, damit der Punkt immer sichtbar ist
-    max_x = max(60, asrm_score + 10)
-    max_y = max(75, bdi_score + 10)
+    """Erstellt die Stimmungs-Matrix als Matplotlib-Figur mit detaillierten farbigen Zonen."""
+    fig, ax = plt.subplots(figsize=(9, 7))
+
+    max_x = max(50, asrm_score + 10)
+    max_y = max(60, bdi_score + 10)
     ax.set_xlim(-2, max_x)
     ax.set_ylim(-2, max_y)
     
     ax.set_xlabel("Manie/Psychose Score")
     ax.set_ylabel("Depression Score")
 
-    # Schwellenwerte
-    manic_thresh = 18
-    depressive_thresh = 24
+    # Schwellenwerte basierend auf Interpretationsfunktionen
+    manic_light_thresh = 9
+    manic_mod_thresh = 18
+    depressive_light_thresh = 14
+    depressive_mod_thresh = 24
 
-    # Zonen mit ax.fill definieren (x-Koordinaten, y-Koordinaten der Ecken)
-    # Mischzustand (oben rechts)
-    ax.fill([manic_thresh, max_x, max_x, manic_thresh], [depressive_thresh, depressive_thresh, max_y, max_y], 
-            '#FADBD8', alpha=0.6, label='Mischzustand')
-    # Depressiv (oben links)
-    ax.fill([-2, manic_thresh, manic_thresh, -2], [depressive_thresh, depressive_thresh, max_y, max_y], 
-            '#D6EAF8', alpha=0.6, label='Depressiv')
-    # (Hypo)Manisch (unten rechts)
-    ax.fill([manic_thresh, max_x, max_x, manic_thresh], [-2, -2, depressive_thresh, depressive_thresh], 
-            '#FEF9E7', alpha=0.6, label='(Hypo)Manisch')
-    # Euthym (unten links)
-    ax.fill([-2, manic_thresh, manic_thresh, -2], [-2, -2, depressive_thresh, depressive_thresh], 
-            '#E8F8F5', alpha=0.6, label='Euthym/Stabil')
+    # Farbpalette für die Zonen
+    c_euthym = '#E8F8F5'
+    c_dep_light = '#D6EAF8'
+    c_dep_mod = '#AED6F1'
+    c_manic_light = '#FEF9E7'
+    c_manic_mod = '#FDEBD0'
+    c_mixed = '#FADBD8'
 
-    # Punkt für den aktuellen Score zeichnen
-    ax.plot(asrm_score, bdi_score, "o", color="#e74c3c", markersize=14, markeredgecolor="white", markeredgewidth=2, label="Aktueller Wert")
-    ax.text(asrm_score, bdi_score, f"{asrm_score}/{bdi_score}", ha="center", va="center", color="white", fontsize=9, fontweight="bold")
-    
-    ax.legend(loc="upper left")
-    ax.grid(True, linestyle='--', alpha=0.6)
+    # Zonen mit ax.fill zeichnen
+    # Euthym / Stabil
+    ax.fill([-2, manic_light_thresh, manic_light_thresh, -2], [-2, -2, depressive_light_thresh, depressive_light_thresh], c_euthym)
+    # Rein Depressiv
+    ax.fill([-2, manic_light_thresh, manic_light_thresh, -2], [depressive_light_thresh, depressive_light_thresh, depressive_mod_thresh, depressive_mod_thresh], c_dep_light)
+    ax.fill([-2, manic_light_thresh, manic_light_thresh, -2], [depressive_mod_thresh, depressive_mod_thresh, max_y, max_y], c_dep_mod)
+    # Rein (Hypo)Manisch
+    ax.fill([manic_light_thresh, manic_mod_thresh, manic_mod_thresh, manic_light_thresh], [-2, -2, depressive_light_thresh, depressive_light_thresh], c_manic_light)
+    ax.fill([manic_mod_thresh, max_x, max_x, manic_mod_thresh], [-2, -2, depressive_light_thresh, depressive_light_thresh], c_manic_mod)
+    # Mischzustände (der gesamte restliche Bereich)
+    ax.fill([manic_light_thresh, max_x, max_x, manic_light_thresh], [depressive_light_thresh, depressive_light_thresh, max_y, max_y], c_mixed)
+
+    # Text-Annotationen für die Hauptbereiche
+    text_props = {'ha': 'center', 'va': 'center', 'fontsize': 11, 'fontweight': 'bold', 'color': 'gray'}
+    ax.text(manic_light_thresh / 2, depressive_light_thresh / 2, 'Euthym', **text_props)
+    ax.text(manic_light_thresh / 2, (depressive_light_thresh + max_y) / 2.5, 'Depressiv', rotation=90, **text_props)
+    ax.text((manic_light_thresh + max_x) / 2.2, depressive_light_thresh / 2, '(Hypo)Manisch', **text_props)
+    ax.text((manic_light_thresh + max_x) / 2.2, (depressive_light_thresh + max_y) / 2.5, 'Mischzustand', **text_props)
+
+    # Schwellenlinien zur Verdeutlichung des Rasters
+    ax.axvline(manic_light_thresh, color="grey", lw=1, linestyle="--")
+    ax.axvline(manic_mod_thresh, color="grey", lw=1, linestyle="--")
+    ax.axhline(depressive_light_thresh, color="grey", lw=1, linestyle="--")
+    ax.axhline(depressive_mod_thresh, color="grey", lw=1, linestyle="--")
+
+    # Punkt für den aktuellen Score (ohne Text)
+    ax.plot(asrm_score, bdi_score, "o", color="#e74c3c", markersize=15, markeredgecolor="black", markeredgewidth=1.5, label="Aktueller Wert", zorder=10)
+
+    ax.legend(loc="upper right")
+    ax.grid(True, linestyle=':', alpha=0.4)
     plt.tight_layout()
     
     return fig
 
 def generate_pdf_bytes(name: str, datum, asrm_items, asrm_answers, asrm_sum, asrm_text, bdi_items, bdi_answers, bdi_sum, bdi_text, fig: plt.Figure) -> bytes:
-    """Erstellt den gesamten Bericht als PDF und gibt die Bytes zurück."""
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=14)
@@ -204,13 +220,13 @@ def main():
     st.pyplot(mood_matrix_fig)
     with st.expander("Interpretation der Matrix"):
         st.caption("""
-        **Was es zeigt:** Ihre aktuellen Scores für manische und depressive Symptome in einem zweidimensionalen Raum.
+        **Was es zeigt:** Ihre Scores in einem Raster, das verschiedene Zustände von euthym über leichte bis zu moderaten/schweren Symptomen darstellt.
         
-        **Warum es wichtig ist:** Die Position Ihres Punktes visualisiert Ihren Zustand:
-        - **Unten rechts (gelb):** (Hypo)manische Symptome dominieren.
-        - **Oben links (blau):** Depressive Symptome dominieren.
-        - **Oben rechts (rot):** Ein "Mischzustand", bei dem gleichzeitig signifikante manische und depressive Symptome vorliegen.
-        - **Unten links (grün):** Euthymer oder unauffälliger Bereich.
+        **Warum es wichtig ist:** Die Position Ihres Punktes visualisiert Ihren Zustand sehr differenziert:
+        - **Grüner Bereich (unten links):** Euthymer / stabiler Zustand.
+        - **Gelbe Bereiche (unten mitte/rechts):** Rein (hypo)manische Symptome (leicht bis moderat/schwer).
+        - **Blaue Bereiche (oben links):** Rein depressive Symptome (leicht bis moderat/schwer).
+        - **Roter Bereich (restliche Felder):** Mischzustand, bei dem gleichzeitig depressive und (hypo)manische Symptome in unterschiedlicher Ausprägung vorliegen.
         """)
 
     st.subheader("Bericht als PDF exportieren")
